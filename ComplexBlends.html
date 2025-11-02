@@ -183,13 +183,18 @@ Object.entries(blends).forEach(([blend, romanBase]) => {
 function speakTelugu(text, roman){
   window.speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(text);
-  let teVoice = voices.find(v => v.lang === "te-IN");
-  let enVoice = voices.find(v => v.lang === "en-IN" || v.lang === "en-GB");
-  utter.voice = teVoice || enVoice;
-  utter.lang = teVoice ? "te-IN" : "en-IN";
-  utter.rate = 0.9;
-  utter.pitch = 1.0;
-  utter.text = teVoice ? text : roman;
+let teVoice = voices.find(v => v.lang === "te-IN");
+if (teVoice) {
+  utter.voice = teVoice;
+  utter.lang = "te-IN";
+  utter.text = text;  // speak actual Telugu text
+} else {
+  console.warn("⚠️ Telugu voice not found. Please install Telugu (India) voice in system settings.");
+  utter.voice = null;
+  utter.lang = "te-IN";
+  utter.text = text; // still try Telugu
+}
+
   window.speechSynthesis.speak(utter);
 }
 
