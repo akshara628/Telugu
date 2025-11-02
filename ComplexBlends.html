@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telugu Blends Learning & Practice</title>
+<style>
+  body {
+    font-family: "Noto Sans Telugu", "Gautami", Arial, sans-serif;
+    background-color: #fffaf2;
+    color: #222;
+    padding: 20px;
+  }
+  h1, h2 {
+    text-align: center;
+    color: #b22222;
+  }
+  p {
+    text-align: center;
+    font-size: 1.1em;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 1.2em;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    text-align: center;
+    padding: 8px;
+    vertical-align: middle;
+  }
+  th {
+    background-color: #ffe4b5;
+  }
+  td {
+    background-color: #fff8dc;
+  }
+  td span {
+    cursor: pointer;
+    color: #b22222;
+    font-weight: bold;
+    display: block;
+  }
+  td .roman {
+    font-size: 0.8em;
+    color: green;
+  }
+  td span:hover {
+    color: #ff6600;
+    text-decoration: underline;
+  }
+  #practiceArea {
+    margin-top: 30px;
+    text-align: center;
+    background: #fdf3d5;
+    border: 2px solid #f0c06d;
+    border-radius: 10px;
+    padding: 15px;
+  }
+  #feedback {
+    font-size: 1.3em;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  button {
+    background: #ffb347;
+    color: #222;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #ff9800;
+  }
+</style>
+</head>
+<body>
+
+<h1>తెలుగు సంయుక్తాక్షరాలు (Blends) + అచ్చులు</h1>
+<p>Click any blend to hear pronunciation 🔊 (Telugu or English)</p>
+
+<table id="blendTable">
+  <tr>
+    <th>బ్లెండ్</th>
+    <th>+ అ</th>
+    <th>+ ఆ</th>
+    <th>+ ఇ</th>
+    <th>+ ఈ</th>
+    <th>+ ఉ</th>
+    <th>+ ఊ</th>
+    <th>+ ఎ</th>
+    <th>+ ఏ</th>
+    <th>+ ఐ</th>
+    <th>+ ఒ</th>
+    <th>+ ఓ</th>
+    <th>+ ఔ</th>
+  </tr>
+</table>
+
+<div id="practiceArea">
+  <h2>🎯 Practice Mode</h2>
+  <p>Click “Play Sound” and select the correct Telugu blend!</p>
+  <button onclick="startPractice()">▶️ Play Sound</button>
+  <div id="feedback"></div>
+</div>
+
+<script>
+const vowels = ["అ","ఆ","ఇ","ఈ","ఉ","ఊ","ఎ","ఏ","ఐ","ఒ","ఓ","ఔ"];
+const vowelSigns = ["","ా","ి","ీ","ు","ూ","ె","ే","ై","ొ","ో","ౌ"];
+const romanVowels = ["a","aa","i","ee","u","oo","e","e","ai","o","o","au"];
+
+// 100+ blends (common Telugu consonant clusters)
+const blends = {
+  // basic r-based blends
+  "క్ర": "kr","ఖ్ర": "khr","గ్ర": "gr","ఘ్ర": "ghr","చ్ర": "chr","జ్ర": "jr","ఝ్ర": "jhr",
+  "ట్ర": "tr","ఠ్ర": "thr","డ్ర": "dr","ఢ్ర": "dhr","త్ర": "thr","థ్ర": "thhr","ద్ర": "dr",
+  "ధ్ర": "dhr","ప్ర": "pr","ఫ్ర": "phr","బ్ర": "br","భ్ర": "bhr","మ్ర": "mr",
+  "య్ర": "yr","ర్ర": "rr","ల్ర": "lr","వ్ర": "vr","శ్ర": "shr","ష్ర": "shhr","స్ర": "sr","హ్ర": "hr",
+
+  // ya-based blends
+  "క్య": "kya","ఖ్య": "khya","గ్య": "gya","ఘ్య": "ghya","చ్య": "chya","జ్య": "jya","ఝ్య": "jhya",
+  "ట్య": "tya","డ్య": "dya","త்ய": "tya","ద்ய": "dya","న్య": "nya","ప్య": "pya","ఫ్య": "phya",
+  "బ్య": "bya","భ్య": "bhya","మ్య": "mya","వ్య": "vya","శ్య": "shya","స్య": "sya","హ్య": "hya",
+
+  // va-based blends
+  "క్వ": "kva","ఖ్వ": "khva","గ్వ": "gva","ఘ్వ": "ghva","చ్వ": "chva","జ్వ": "jva",
+  "ట్వ": "tva","డ్వ": "dva","ద్వ": "dva","ధ్వ": "dhva","ప్వ": "pva","ఫ్వ": "phva",
+  "బ్వ": "bva","భ్వ": "bhva","మ్వ": "mva","శ్వ": "shva","స్వ": "sva","హ్వ": "hva",
+
+  // la-based
+  "క్ల": "kla","గ్ల": "gla","ప్ల": "pla","బ్ల": "bla","ఫ్ల": "phla","మ్ల": "mla","వ్ల": "vla","శ్ల": "shla","స్ల": "sla",
+
+  // compound special blends
+  "క్ష": "ksha","జ్ఞ": "jna","హ్మ": "hma","స్మ": "sma","క్ట": "kta","గ్న": "gna","ద్భ": "dbha","ద్వ్య": "dvya","శ్ర్య": "shry",
+  "త్ర్య": "try","ధ్య": "dhya","ధ్య్ర": "dhry","ప్ర్య": "pry","గ్ర్య": "gry","బ్ర్య": "bry","క్ర్య": "kry","శ్ర్వ": "shrva"
+};
+
+const table = document.getElementById("blendTable");
+const allCombos = [];
+let voices = [];
+
+function loadVoices() {
+  voices = window.speechSynthesis.getVoices();
+  if (!voices.length) {
+    window.speechSynthesis.onvoiceschanged = () => {
+      voices = window.speechSynthesis.getVoices();
+    };
+  }
+}
+
+loadVoices();
+
+// Build table dynamically
+Object.entries(blends).forEach(([blend, romanBase]) => {
+  const row = document.createElement("tr");
+  const first = document.createElement("td");
+  first.textContent = blend;
+  row.appendChild(first);
+
+  vowels.forEach((vowel, i) => {
+    const td = document.createElement("td");
+    const combo = blend + vowelSigns[i];
+    const romanCombo = romanBase + romanVowels[i];
+    allCombos.push({ combo, roman: romanCombo });
+    const span = document.createElement("span");
+    span.textContent = combo;
+    span.onclick = () => speakTelugu(combo, romanCombo);
+    const small = document.createElement("div");
+    small.className = "roman";
+    small.textContent = romanCombo;
+    td.appendChild(span);
+    td.appendChild(small);
+    row.appendChild(td);
+  });
+  table.appendChild(row);
+});
+
+// Speak Telugu voice with fallback
+function speakTelugu(text, roman){
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  let teVoice = voices.find(v => v.lang === "te-IN");
+  let enVoice = voices.find(v => v.lang === "en-IN" || v.lang === "en-GB");
+  utter.voice = teVoice || enVoice;
+  utter.lang = teVoice ? "te-IN" : "en-IN";
+  utter.rate = 0.9;
+  utter.pitch = 1.0;
+  utter.text = teVoice ? text : roman;
+  window.speechSynthesis.speak(utter);
+}
+
+// === PRACTICE MODE ===
+let currentAnswer = null;
+function startPractice(){
+  document.getElementById("feedback").textContent = "";
+  const random = allCombos[Math.floor(Math.random() * allCombos.length)];
+  currentAnswer = random.combo;
+  speakTelugu(random.combo, random.roman);
+}
+function handleClick(chosen){
+  const feedback = document.getElementById("feedback");
+  if (!currentAnswer) return;
+  if (chosen === currentAnswer){
+    feedback.textContent = "✅ Correct! " + chosen;
+    feedback.style.color = "green";
+    setTimeout(startPractice, 1500);
+  } else {
+    feedback.textContent = "❌ Try again!";
+    feedback.style.color = "red";
+  }
+}
+</script>
+
+</body>
+</html>
