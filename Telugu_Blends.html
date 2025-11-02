@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telugu Letters with English Pronunciation</title>
+<style>
+  body {
+    font-family: "Noto Sans Telugu", "Gautami", Arial, sans-serif;
+    background-color: #fefaf2;
+    color: #222;
+    padding: 20px;
+  }
+  h1 {
+    text-align: center;
+    color: #b22222;
+  }
+  p {
+    text-align: center;
+    font-size: 1.1em;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    text-align: center;
+    padding: 8px;
+    font-size: 1.3em;
+    vertical-align: middle;
+  }
+  th {
+    background-color: #ffe4b5;
+  }
+  td {
+    background-color: #fff8dc;
+  }
+  td span {
+    cursor: pointer;
+    color: #b22222;
+    font-weight: bold;
+    display: block;
+  }
+  td .roman {
+    font-size: 0.8em;
+    color: green;
+  }
+  td span:hover {
+    color: #ff6600;
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+
+<h1>తెలుగు వ్యంజనాలు + అచ్చులు (with English Pronunciation)</h1>
+<p>Click on any letter to hear the English pronunciation 🔊</p>
+
+<table id="teTable">
+  <tr>
+    <th>వ్యంజనం</th>
+    <th>+ అ</th>
+    <th>+ ఆ</th>
+    <th>+ ఇ</th>
+    <th>+ ఈ</th>
+    <th>+ ఉ</th>
+    <th>+ ఊ</th>
+    <th>+ ఎ</th>
+    <th>+ ఏ</th>
+    <th>+ ఐ</th>
+    <th>+ ఒ</th>
+    <th>+ ఓ</th>
+    <th>+ ఔ</th>
+  </tr>
+</table>
+
+<script>
+const vowels = ["అ","ఆ","ఇ","ఈ","ఉ","ఊ","ఎ","ఏ","ఐ","ఒ","ఓ","ఔ"];
+const vowelSigns = ["","ా","ి","ీ","ు","ూ","ె","ే","ై","ొ","ో","ౌ"];
+const romanVowels = ["a","aa","i","ee","u","oo","e","e","ai","o","o","au"];
+
+const consonants = [
+  "క","ఖ","గ","ఘ","చ","ఛ","జ","ఝ","ట","ఠ","డ","ఢ","ణ",
+  "త","థ","ద","ధ","న","ప","ఫ","బ","భ","మ","య","ర","ల","వ","శ","ష","స","హ","ళ","క్ష","ఱ"
+];
+
+// create table
+const table = document.getElementById("teTable");
+
+consonants.forEach(con => {
+  const row = document.createElement("tr");
+  const first = document.createElement("td");
+  first.textContent = con;
+  row.appendChild(first);
+
+  vowels.forEach((vowel, i) => {
+    const td = document.createElement("td");
+    const combo = con + vowelSigns[i];
+    const romanCombo = transliterate(con) + romanVowels[i];
+    const span = document.createElement("span");
+    span.textContent = combo;
+    span.onclick = () => speakEnglish(romanCombo);
+    const small = document.createElement("div");
+    small.className = "roman";
+    small.textContent = romanCombo;
+    td.appendChild(span);
+    td.appendChild(small);
+    row.appendChild(td);
+  });
+  table.appendChild(row);
+});
+
+// simple transliteration
+function transliterate(letter){
+  const map = {
+    "క":"k","ఖ":"kh","గ":"g","ఘ":"gh","చ":"ch","ఛ":"chh","జ":"j","ఝ":"jh",
+    "ట":"t","ఠ":"th","డ":"d","ఢ":"dh","ణ":"n","త":"t","థ":"th","ద":"d","ధ":"dh","న":"n",
+    "ప":"p","ఫ":"ph","బ":"b","భ":"bh","మ":"m","య":"y","ర":"r","ల":"l","వ":"v",
+    "శ":"sh","ష":"sh","స":"s","హ":"h","ళ":"la","క్ష":"ksha","ఱ":"ra"
+  };
+  return map[letter] || "";
+}
+
+// Speak English version of pronunciation
+function speakEnglish(text){
+  window.speechSynthesis.cancel();
+  setTimeout(() => {
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = "en-IN"; // English Indian accent (works everywhere)
+    utter.rate = 0.9;
+    utter.pitch = 1.0;
+    window.speechSynthesis.speak(utter);
+  }, 150);
+}
+</script>
+
+</body>
+</html>
